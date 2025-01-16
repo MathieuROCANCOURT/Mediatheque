@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CD;
+use Exception;
 use Illuminate\Http\Request;
 
 class CDController extends Controller
@@ -12,10 +13,16 @@ class CDController extends Controller
      */
     public function index() {
         try {
-            $items = CD::all();
-            return response()->json($items);
+            $cds = CD::all();
+            return response()->json([
+                'status' => 'success',
+                'data' => $cds
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch CDs'], 500);
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 

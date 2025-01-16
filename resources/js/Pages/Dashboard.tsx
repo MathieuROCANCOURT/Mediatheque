@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import CDList from "../Components/CDList";
@@ -17,11 +17,7 @@ export default function Dashboard() {
 
             <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                 <div className="p-6 text-gray-900 dark:text-gray-100">
-                    You're logged in!
-                    Je suis rentré!! AHAAGH.
-                </div>
-                <div className="p-6 text-gray-900 dark:text-gray-100">
-                    <h3 className="text-lg font-semibold">CD Data:</h3>
+                    <h2 className="text-lg text-center font-semibold">Emprunt de CD</h2>
                     <CDList />
                 </div>
             </div>

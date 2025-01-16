@@ -10,8 +10,9 @@ class CD extends Model
 
     protected $fillable = [
         'title',
-        'author',
-        'category'
+        'artist',
+        'category',
+        'year'
     ];
 
     public function category() {

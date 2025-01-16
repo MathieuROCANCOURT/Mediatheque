@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\CDController;
-use App\Http\Controllers\ClientController;
-use App\Http\Controllers\LoanController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// Test route
+Route::get('test', function () {
+    return response()->json(['message' => 'API is working!']);
+});
+
+// CD routes
 Route::get('/cds', [CDController::class, 'index']);
-Route::get('/clients', [ClientController::class, 'index']);
-Route::get('/loans', [LoanController::class, 'index']);

@@ -14,20 +14,29 @@ class CDsTableSeeder extends Seeder
     {
         CD::create([
             'title' => 'Thriller',
-            'author' => 'Michael Jackson',
+            'artist' => 'Michael Jackson',
+            'year' => 2020,
             'category' => 'Pop',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         CD::create([
             'title' => 'Back in Black',
-            'author' => 'AC/DC',
+            'artist' => 'AC/DC',
+            'year' => 1988,
             'category' => 'Rock',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         CD::create([
             'title' => 'Kind of Blue',
-            'author' => 'Miles Davis',
+            'artist' => 'Miles Davis',
+            'year' => 1975,
             'category' => 'Jazz',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 }

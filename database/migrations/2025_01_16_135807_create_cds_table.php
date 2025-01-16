@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('cds', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('author');
+            $table->string('artist');
+            $table->integer('year')->nullable();
             $table->string('category');
             $table->timestamps();
         });
