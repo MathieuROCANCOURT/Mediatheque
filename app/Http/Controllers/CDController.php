@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CD;
 use Illuminate\Http\Request;
 
 class CDController extends Controller
@@ -11,7 +12,11 @@ class CDController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            return CD::all();
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
