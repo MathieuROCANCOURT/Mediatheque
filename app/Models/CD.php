@@ -6,11 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class CD extends Model
 {
+    protected $table = 'CDs';
+
+    protected $fillable = [
+        'title',
+        'author',
+        'category'
+    ];
+
     public function category() {
-        return $this->belongsTo(Category::class);
+
     }
 
     public function author() {
-        return $this->belongsTo(Author::class);
+
     }
 }

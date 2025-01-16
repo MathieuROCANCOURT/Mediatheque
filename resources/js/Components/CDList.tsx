@@ -11,32 +11,51 @@ interface CD {
 const CDList: React.FC = () => {
     const [cds, setCds] = useState<CD[]>([]);
     const [filter, setFilter] = useState<string>('');
+    const [error, setError] = useState<string>('');
 
     useEffect(() => {
-        axios.get<CD[]>('/api/cds').then(response => {
-            setCds(response.data);
-        });
+        const fetchCDs = async () => {
+            try {
+                // Use the correct base URL
+                const response = await axios.get<CD[]>('http://localhost:8000/api/cds');
+                setCds(response.data);
+            } catch (err) {
+                setError('Error fetching CDs');
+                console.error('Error fetching data:', err);
+            }
+        };
+
+        fetchCDs();
     }, []);
 
-    useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/cds').then(response => {
-            setCds(response.data);
-        }).catch(error => {
-            console.error('Error fetching data:', error);
-        });
-    }, []);
-
-    const filteredCds = cds.filter(cd => cd.author.includes(filter) || cd.category.includes(filter));
+    const filteredCds = cds.filter(cd =>
+        cd.author.toLowerCase().includes(filter.toLowerCase()) ||
+        cd.category.toLowerCase().includes(filter.toLowerCase())
+    );
 
     return (
         <div>
-            Test
-            <input type="text" value={filter} onChange={e => setFilter(e.target.value)} placeholder="Filter by author or category" />
-            <ul>
-                {filteredCds.map(cd => (
-                    <li key={cd.id}>{cd.title}</li>
-                ))}
-            </ul>
+            {error && <div className="text-red-500">{error}</div>}
+            <input
+                type="text"
+                value={filter}
+                onChange={e => setFilter(e.target.value)}
+                placeholder="Filter by author or category"
+                className="border p-2 mb-4 rounded text-blue-500 focus:bg-gray-700"
+            />
+            {cds.length === 0 ? (
+                <p>Loading CDs...</p>
+            ) : (
+                <ul className="space-y-2">
+                    {filteredCds.map(cd => (
+                        <li key={cd.id} className="p-2 border rounded">
+                            <h3 className="font-bold">{cd.title}</h3>
+                            <p>Author: {cd.author}</p>
+                            <p>Category: {cd.category}</p>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };
