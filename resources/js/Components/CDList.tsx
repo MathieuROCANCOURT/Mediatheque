@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import PrimaryButton from "./PrimaryButton";
-import {router} from '@inertiajs/react'; // Import Inertia router
+import {router} from '@inertiajs/react';
 
 interface CD {
     id: number;
@@ -27,10 +27,36 @@ const CDList: React.FC = () => {
     useEffect(() => {
         const fetchCDs = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/cds');
-                setCds(response.data.data);
-            } catch (err) {
-                setError('Error fetching CDs');
+                // Fetch both resources
+                const [cdResponse, loanResponse] = await Promise.all([
+                    axios.get('http://localhost:8000/api/cds'),
+                    axios.get('http://localhost:8000/api/loans')
+                ]);
+
+                const allCDs: CD[] = cdResponse.data.data;
+                const loanedCDs: [{id: number, cd_id:number, user_id:number, loan_date: Date, return_date: Date}] = loanResponse.data.data;
+
+                // Filter out CDs that are currently loaned
+                const availableCDs = allCDs.filter(cd => {
+                    return !loanedCDs.some(loan =>
+                        // Assuming cd_ids could be array or single value
+                        Array.isArray(loan.cd_id)
+                            ? loan.cd_id.includes(cd.id)
+                            : loan.cd_id === cd.id
+                    );
+                });
+
+                setCds(availableCDs);
+
+            } catch (err: any) {
+                // More specific error handling
+                if (err.response) {
+                    setError(`Server error: ${err.response.status}`);
+                } else if (err.request) {
+                    setError('Network error - no response received');
+                } else {
+                    setError(`Error: ${err.message}`);
+                }
                 console.error('Error fetching data:', err);
             }
         };
@@ -94,7 +120,7 @@ const CDList: React.FC = () => {
                 className="border p-2 mb-4 rounded"
             />
             {cds.length === 0 ? (
-                <p>Loading CDs...</p>
+                <p>Nothing CD</p>
             ) : (
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xl text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -131,7 +157,6 @@ const CDList: React.FC = () => {
                                         type="checkbox"
                                         checked={selectedItems.has(cd.id)}
                                         onChange={() => handleSelectItem(cd.id)}
-                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                     />
                                     <label htmlFor={`checkbox-${cd.id}`} className="sr-only">checkbox</label>
                                 </div>
@@ -148,6 +173,7 @@ const CDList: React.FC = () => {
                 <PrimaryButton
                     onClick={handleLoanClick}
                     disabled={selectedItems.size === 0 || isLoading}
+                    className="text-black bg-blue-400 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                 >
                     {isLoading ? 'Processing...' : `Loans (${selectedItems.size} selected)`}
                 </PrimaryButton>

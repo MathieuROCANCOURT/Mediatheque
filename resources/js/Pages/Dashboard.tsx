@@ -9,15 +9,14 @@ export default function Dashboard() {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Dashboard
+                    CD list available can be loans
                 </h2>
             }
         >
-            <Head title="Dashboard" />
+            <Head title="CD available" />
 
             <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                 <div className="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 className="text-lg text-center font-semibold">Emprunt de CD</h2>
                     <CDList />
                 </div>
             </div>

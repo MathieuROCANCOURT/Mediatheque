@@ -30,6 +30,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
+                                <NavLink
+                                    href={route('loans')}
+                                    active={route().current('loans')}
+                                >
+                                    Loans list
+                                </NavLink>
                             </div>
                         </div>
 
@@ -39,7 +45,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                     <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
                                             <button
-                                                type="button"
                                                 className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
                                             >
                                                 {user.name}
@@ -63,13 +68,14 @@ export default function AuthenticatedLayout({ header, children }) {
                                     <Dropdown.Content>
                                         <Dropdown.Link
                                             href={route('profile.edit')}
+                                            className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                         >
                                             Profile
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route('logout')}
                                             method="post"
-                                            as="button"
+                                            className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                         >
                                             Log Out
                                         </Dropdown.Link>
@@ -134,6 +140,12 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('loans')}
+                            active={route().current('loans')}
+                        >
+                            Loans list
+                        </ResponsiveNavLink>
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4">
@@ -153,7 +165,6 @@ export default function AuthenticatedLayout({ header, children }) {
                             <ResponsiveNavLink
                                 method="post"
                                 href={route('logout')}
-                                as="button"
                             >
                                 Log Out
                             </ResponsiveNavLink>

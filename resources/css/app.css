@@ -3,8 +3,7 @@
 @tailwind utilities;
 
 button {
-    margin: 1em;
-    background-color: deepskyblue;
+    color: black;
 }
 
 button:hover {
