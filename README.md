@@ -15,12 +15,47 @@ La médiathèque prête les CD que les clients peuvent prendre.
 
 ## Ligne de commande
 
-Installation et lancement du code:
-
-```shell
-npm install
-composer require spatie/laravel-permission
-php artisan migrate:fresh --seed
-composer run dev
+Install PHP dependencies:
+```bash
+composer install
 ```
 
+Install NPM dependencies:
+```bash
+npm install
+```
+
+Build assets:
+```bash
+npm run dev
+```
+
+Setup configuration:
+```bash
+cp .env.example .env
+```
+
+Generate application key:
+```bash
+php artisan key:generate
+```
+
+Create an SQLite database. You can also use another database (MySQL, Postgres), simply update your configuration accordingly.
+```bash
+touch database/database.sqlite
+```
+
+Run database migrations:
+```bash
+php artisan migrate
+```
+
+Run database seeder:
+```bash
+php artisan db:seed
+```
+
+Run artisan server:
+```bash
+php artisan serve
+```
