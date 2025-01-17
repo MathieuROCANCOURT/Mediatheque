@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import PrimaryButton from "./PrimaryButton";
+import {router} from '@inertiajs/react'; // Import Inertia router
 
 interface CD {
     id: number;
@@ -14,6 +15,7 @@ const CDList: React.FC = () => {
     const [filter, setFilter] = useState<string>('');
     const [error, setError] = useState<string>('');
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+    const [isLoading, setIsLoading] = useState(false);
 
     const filteredCds: CD[] = cds.filter((cd: CD): boolean =>
         cd.artist.toLowerCase().includes(filter.toLowerCase()) ||
@@ -57,6 +59,32 @@ const CDList: React.FC = () => {
             newSelectedItems.add(id);
         }
         setSelectedItems(newSelectedItems);
+    };
+
+    const handleLoanClick = async () => {
+        setIsLoading(true);
+        try {
+            // Get the selected CD IDs
+            const selectedCDIds = Array.from(selectedItems);
+
+            // Send POST request to create loans for each selected CD
+            await axios.post('/api/loans', {
+                cd_ids: selectedCDIds
+            });
+
+            // If successful, navigate to loans page
+            router.visit('/loans', {
+                method: 'get',
+                preserveState: true,
+                preserveScroll: true,
+            });
+
+        } catch (err) {
+            console.error('Error creating loans:', err);
+            setError('Failed to create loans');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -120,9 +148,12 @@ const CDList: React.FC = () => {
                     </tbody>
                 </table>
             )}
-            <div className="mt-60 text-center">
-                <PrimaryButton>
-                    Loans
+            <div className="text-center">
+                <PrimaryButton
+                    onClick={handleLoanClick}
+                    disabled={selectedItems.size === 0 || isLoading}
+                >
+                    {isLoading ? 'Processing...' : `Loans (${selectedItems.size} selected)`}
                 </PrimaryButton>
             </div>
         </div>

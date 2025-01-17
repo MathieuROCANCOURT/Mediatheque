@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Loan;
 use Illuminate\Http\Request;
 
 class LoanController extends Controller
@@ -19,7 +20,17 @@ class LoanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $cdIds = $request->input('cd_ids');
+        $clientId = $request->user()->id; // Assuming the client is the authenticated user
+
+        foreach ($cdIds as $cdId) {
+            Loan::create([
+                'cd_id' => $cdId,
+                'client_id' => $clientId,
+            ]);
+        }
+
+        return response()->json(['message' => 'Loans created successfully'], 201);
     }
 
     /**

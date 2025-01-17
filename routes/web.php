@@ -31,4 +31,14 @@ Route::get('/api/cds', [CDController::class, 'index']);
 Route::get('/api/clients', [ClientController::class, 'index']);
 Route::get('/api/loans', [LoanController::class, 'index']);
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
+    Route::get('/loans', function () {
+        return Inertia::render('Loans');
+    })->name('loans');
+});
+
 require __DIR__.'/auth.php';
