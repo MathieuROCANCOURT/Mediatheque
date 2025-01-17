@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -26,5 +28,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/api/cds', [CDController::class, 'index']);
+Route::get('/api/clients', [ClientController::class, 'index']);
+Route::get('/api/loans', [LoanController::class, 'index']);
 
 require __DIR__.'/auth.php';

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import PrimaryButton from "./PrimaryButton";
 
 interface CD {
     id: number;
@@ -79,6 +80,12 @@ const CDList: React.FC = () => {
                     </tbody>
                 </table>
             )}
+            <div className={"mt-60 text-center"}>
+                <PrimaryButton>
+                    Loans
+                </PrimaryButton>
+
+            </div>
         </div>
     );
 };
