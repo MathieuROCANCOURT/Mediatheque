@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import PrimaryButton from "./PrimaryButton";
+import {router} from '@inertiajs/react'; // Import Inertia router
 
 interface CD {
     id: number;
