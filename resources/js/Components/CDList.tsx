@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PrimaryButton from "./PrimaryButton";
 
@@ -13,11 +13,18 @@ const CDList: React.FC = () => {
     const [cds, setCds] = useState<CD[]>([]);
     const [filter, setFilter] = useState<string>('');
     const [error, setError] = useState<string>('');
+    const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+
+    const filteredCds: CD[] = cds.filter((cd: CD): boolean =>
+        cd.artist.toLowerCase().includes(filter.toLowerCase()) ||
+        cd.category.toLowerCase().includes(filter.toLowerCase())
+    );
+    const isAllSelected = filteredCds.length > 0 && selectedItems.size === filteredCds.length;
+    const isPartiallySelected = selectedItems.size > 0 && selectedItems.size < filteredCds.length;
 
     useEffect(() => {
         const fetchCDs = async () => {
             try {
-                // Use the correct base URL
                 const response = await axios.get('http://localhost:8000/api/cds');
                 setCds(response.data.data);
             } catch (err) {
@@ -29,10 +36,28 @@ const CDList: React.FC = () => {
         fetchCDs();
     }, []);
 
-    const filteredCds = cds.filter(cd =>
-        cd.artist.toLowerCase().includes(filter.toLowerCase()) ||
-        cd.category.toLowerCase().includes(filter.toLowerCase())
-    );
+    /**
+     * Select or deselect all checkboxes
+     */
+    const handleSelectAll = (): void => {
+        if (selectedItems.size >= 1) {
+            // If all items are selected, deselect all
+            setSelectedItems(new Set());
+        } else {
+            // Otherwise, select all filtered items
+            setSelectedItems(new Set(filteredCds.map(cd => cd.id)));
+        }
+    };
+
+    const handleSelectItem = (id: number) => {
+        const newSelectedItems = new Set(selectedItems);
+        if (selectedItems.has(id)) {
+            newSelectedItems.delete(id);
+        } else {
+            newSelectedItems.add(id);
+        }
+        setSelectedItems(newSelectedItems);
+    };
 
     return (
         <div>
@@ -48,43 +73,57 @@ const CDList: React.FC = () => {
                 <p>Loading CDs...</p>
             ) : (
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead className={"text-xl text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"}>
+                    <thead className="text-xl text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" className="p-4">
                             <div className="flex items-center">
-                                <input id="checkbox-all-search" type="checkbox"
-                                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                <label htmlFor="checkbox-all-search" className="sr-only" />
+                                <input
+                                    id="checkbox-all-search"
+                                    type="checkbox"
+                                    checked={isAllSelected}
+                                    ref={input => {
+                                        if (input) {
+                                            input.indeterminate = isPartiallySelected;
+                                        }
+                                    }}
+                                    onChange={handleSelectAll}
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                />
+                                <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
                             </div>
                         </th>
-                        <th scope="col" className={"px-6 py-3"}>Title</th>
-                        <th scope="col" className={"px-6 py-3"}>Artist</th>
-                        <th scope="col" className={"px-6 py-3"}>Category</th>
+                        <th scope="col" className="px-6 py-3">Title</th>
+                        <th scope="col" className="px-6 py-3">Artist</th>
+                        <th scope="col" className="px-6 py-3">Category</th>
                     </tr>
                     </thead>
-                    <tbody className={"bg-indigo-50 "}>
+                    <tbody className="bg-indigo-50">
                     {filteredCds.map(cd => (
                         <tr key={cd.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <td className="w-4 p-4">
                                 <div className="flex items-center">
-                                    <input id="checkbox-table-search-1" type="checkbox"
-                                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                    <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
+                                    <input
+                                        id={`checkbox-${cd.id}`}
+                                        type="checkbox"
+                                        checked={selectedItems.has(cd.id)}
+                                        onChange={() => handleSelectItem(cd.id)}
+                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    />
+                                    <label htmlFor={`checkbox-${cd.id}`} className="sr-only">checkbox</label>
                                 </div>
                             </td>
                             <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{cd.title}</td>
-                            <td className={"px-6 py-4"}>{cd.artist}</td>
-                            <td className={"px-6 py-4"}>{cd.category}</td>
+                            <td className="px-6 py-4">{cd.artist}</td>
+                            <td className="px-6 py-4">{cd.category}</td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
             )}
-            <div className={"mt-60 text-center"}>
+            <div className="mt-60 text-center">
                 <PrimaryButton>
                     Loans
                 </PrimaryButton>
-
             </div>
         </div>
     );
