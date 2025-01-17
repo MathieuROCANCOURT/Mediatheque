@@ -15,11 +15,7 @@ class CD extends Model
         'year'
     ];
 
-    public function category() {
-
-    }
-
-    public function author() {
-
+    public function loan() {
+        return $this->hasMany(Loan::class);
     }
 }

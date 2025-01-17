@@ -47,4 +47,12 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the loans associated with the user.
+     */
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
 }

@@ -10,7 +10,7 @@ interface Loan {
         title: string;
         artist: string;
     };
-    client: {
+    user: {
         id: number;
         name: string;
     };
@@ -26,7 +26,7 @@ export default function Loans() {
     useEffect(() => {
         const fetchLoans = async () => {
             try {
-                const response = await axios.get('/api/loans');
+                const response = await axios.get('http://localhost:8000/api/loans');
                 setLoans(response.data.data);
             } catch (err) {
                 console.error('Error fetching loans:', err);
@@ -75,7 +75,7 @@ export default function Loans() {
                                         {loan.cd.title}
                                     </td>
                                     <td className="px-6 py-4">{loan.cd.artist}</td>
-                                    <td className="px-6 py-4">{loan.client.name}</td>
+                                    <td className="px-6 py-4">{loan.user.name}</td>
                                     <td className="px-6 py-4">{new Date(loan.loan_date).toLocaleDateString()}</td>
                                     <td className="px-6 py-4">
                                         {loan.return_date ? 'Returned' : 'Active'}

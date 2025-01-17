@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ClientController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -28,8 +27,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/api/cds', [CDController::class, 'index']);
-Route::get('/api/clients', [ClientController::class, 'index']);
 Route::get('/api/loans', [LoanController::class, 'index']);
+Route::post('/api/loans', [LoanController::class, 'store']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {

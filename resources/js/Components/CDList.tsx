@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import PrimaryButton from "./PrimaryButton";
-import {router} from '@inertiajs/react'; // Import Inertia router
 
 interface CD {
     id: number;
@@ -41,7 +40,7 @@ const CDList: React.FC = () => {
     /**
      * Select or deselect all checkboxes
      */
-    const handleSelectAll = (): void => {
+    const handleSelectAll: () => void = (): void => {
         if (selectedItems.size >= 1) {
             // If all items are selected, deselect all
             setSelectedItems(new Set());
@@ -51,7 +50,7 @@ const CDList: React.FC = () => {
         }
     };
 
-    const handleSelectItem = (id: number) => {
+    const handleSelectItem: (id: number) => void = (id: number): void => {
         const newSelectedItems = new Set(selectedItems);
         if (selectedItems.has(id)) {
             newSelectedItems.delete(id);
@@ -61,11 +60,11 @@ const CDList: React.FC = () => {
         setSelectedItems(newSelectedItems);
     };
 
-    const handleLoanClick = async () => {
+    const handleLoanClick: () => Promise<void> = async (): Promise<void> => {
         setIsLoading(true);
         try {
             // Get the selected CD IDs
-            const selectedCDIds = Array.from(selectedItems);
+            const selectedCDIds: number[] = Array.from(selectedItems);
 
             // Send POST request to create loans for each selected CD
             await axios.post('/api/loans', {
@@ -73,11 +72,7 @@ const CDList: React.FC = () => {
             });
 
             // If successful, navigate to loans page
-            router.visit('/loans', {
-                method: 'get',
-                preserveState: true,
-                preserveScroll: true,
-            });
+            router.visit('/loans');
 
         } catch (err) {
             console.error('Error creating loans:', err);

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cd_id')->constrained();
-            $table->foreignId('client_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->date('loan_date');
             $table->date('return_date')->nullable();
             $table->timestamps();

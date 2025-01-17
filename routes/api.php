@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/cds', [CDController::class, 'index']);
-    Route::get('/loans', [LoanController::class, 'index']);
-    Route::post('/loans', [LoanController::class, 'store']);
+    Route::get('/api/cds', [CDController::class, 'index']);
+    Route::get('/api/loans', [LoanController::class, 'index']);
+    Route::post('/api/loans', [LoanController::class, 'store']);
 });
