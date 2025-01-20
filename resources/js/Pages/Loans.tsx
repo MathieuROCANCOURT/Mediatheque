@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import {Head} from '@inertiajs/react';
 import axios from 'axios';
@@ -54,7 +54,7 @@ export default function Loans() {
             setSelectedItems(new Set());
         } else {
             // Otherwise, select all filtered items
-            setSelectedItems(new Set(loans.map((loan : Loan) => loan.id)));
+            setSelectedItems(new Set(loans.map((loan: Loan) => loan.id)));
         }
     };
 
@@ -75,12 +75,13 @@ export default function Loans() {
             const selectedCDIds: number[] = Array.from(selectedItems);
 
             // Send POST request to resend CD in market
-            await axios.post('/api/cds', {
+            await axios.post('/api/loans/return', {
                 cd_ids: selectedCDIds
             });
 
-            // If successful, navigate to loans page
-            //router.visit('/loans');
+            // If successful, update the loans state to remove the returned loans
+            setLoans(loans.filter((loan: Loan): boolean => !selectedItems.has(loan.id)));
+            setSelectedItems(new Set());
 
         } catch (err) {
             console.error('Error creating CDs:', err);
@@ -98,7 +99,7 @@ export default function Loans() {
                 </h2>
             }
         >
-            <Head title="Loans" />
+            <Head title="Loans"/>
 
             <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                 <div className="p-6 text-gray-900 dark:text-gray-100">
@@ -110,7 +111,8 @@ export default function Loans() {
                         <p>Loading loans...</p>
                     ) : (
                         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead className="text-xl text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <thead
+                                className="text-xl text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" className="p-4">
                                     <div className="flex items-center">
@@ -157,7 +159,7 @@ export default function Loans() {
                                     <td className="px-6 py-4">{loan.user.name}</td>
                                     <td className="px-6 py-4">{new Date(loan.loan_date).toLocaleDateString()}</td>
                                     <td className="px-6 py-4">
-                                        {new Date(loan.return_date).toLocaleDateString()}
+                                        {new Date(loan.loan_date).toLocaleDateString() < new Date(loan.return_date).toLocaleDateString() ? "Loan" : "Warning"}
                                     </td>
                                 </tr>
                             ))}

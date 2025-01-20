@@ -58,4 +58,18 @@ class LoanController extends Controller
     public function destroy(string $id) {
         //
     }
+
+
+    public function returnCDs(Request $request) {
+        $loanIds = $request->input('cd_ids');
+
+        foreach ($loanIds as $loanId) {
+            $loan = Loan::find($loanId);
+            if ($loan) {
+                $loan->delete();
+            }
+        }
+
+        return response()->json(['message' => 'Loans deleted successfully'], 200);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class Loan extends Model
 {
@@ -10,7 +11,7 @@ class Loan extends Model
 
     protected $fillable = [
         'cd_id',
-        'user_id',  // Change client_id to user_id
+        'user_id',
         'loan_date',
         'return_date',
     ];
