@@ -26,15 +26,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/api/cds', [CDController::class, 'index']);
-Route::get('/api/loans', [LoanController::class, 'index']);
-Route::post('/api/loans', [LoanController::class, 'store']);
-Route::post('/api/loans/return', [LoanController::class, 'returnCDs']);
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/loans', function () {
         return Inertia::render('Loans');
     })->name('loans');
 });
+
+Route::get('/api/cds', [CDController::class, 'index']);
+Route::get('/api/loans', [LoanController::class, 'index']);
+Route::post('/api/loans', [LoanController::class, 'store']);
+Route::post('/api/loans/return', [LoanController::class, 'returnCDs']);
 
 require __DIR__.'/auth.php';
