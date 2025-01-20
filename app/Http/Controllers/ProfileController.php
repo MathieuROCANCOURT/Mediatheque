@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -51,13 +52,27 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        Auth::logout();
+        DB::beginTransaction();
+        try {
+            // Remove role associations
+            $user->roles()->detach();
 
-        $user->delete();
+            // Delete related loans
+            $user->loans()->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            Auth::logout();
 
-        return Redirect::to('/');
+            $user->delete();
+
+            DB::commit();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return Redirect::to('/');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with('error', 'Failed to delete account. Please try again.');
+        }
     }
 }

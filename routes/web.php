@@ -31,10 +31,6 @@ Route::get('/api/loans', [LoanController::class, 'index']);
 Route::post('/api/loans', [LoanController::class, 'store']);
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-
     Route::get('/loans', function () {
         return Inertia::render('Loans');
     })->name('loans');

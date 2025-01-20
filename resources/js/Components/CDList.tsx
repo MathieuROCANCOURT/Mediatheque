@@ -73,7 +73,7 @@ const CDList: React.FC = () => {
             setSelectedItems(new Set());
         } else {
             // Otherwise, select all filtered items
-            setSelectedItems(new Set(filteredCds.map(cd => cd.id)));
+            setSelectedItems(new Set(filteredCds.map((cd: CD) => cd.id)));
         }
     };
 

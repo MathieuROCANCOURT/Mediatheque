@@ -26,6 +26,15 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cds');
+        $tableNames = config('cds.table_names');
+
+        if (empty($tableNames)) {
+            throw new \Exception('Error: config/cds.php not found and defaults could not be merged. Please publish the package configuration before proceeding, or drop the tables manually.');
+        }
+
+        Schema::drop($tableNames['title']);
+        Schema::drop($tableNames['artist']);
+        Schema::drop($tableNames['year']);
+        Schema::drop($tableNames['category']);
     }
 };
