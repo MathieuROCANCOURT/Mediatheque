@@ -10,7 +10,7 @@ La médiathèque prête les CD que les clients peuvent prendre.
 * Laravel V11
 * [MailPit](https://github.com/axllent/mailpit)
 
-### Diagramme pour la base de donnée
+### Diagramme pour la base de donnée pour les CD
 ![diagram_SQL.png](docs/diagram_SQL.png)
 
 ## Ligne de commande
