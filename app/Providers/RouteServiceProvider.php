@@ -12,8 +12,7 @@ class RouteServiceProvider extends ServiceProvider
 {
     public const HOME = '/dashboard';
 
-    public function boot(): void
-    {
+    public function boot(): void {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });

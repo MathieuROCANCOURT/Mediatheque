@@ -14,9 +14,11 @@ interface CD {
 
 interface CDListProps {
     cds: CD[];
+    onCDDeleted: (deletedIds: number[]) => void;
+    isAdmin: boolean;
 }
 
-const CDList: React.FC<CDListProps> = ({ cds }: CDListProps) => {
+const CDList: React.FC<CDListProps> = ({cds, onCDDeleted, isAdmin}: CDListProps) => {
     const [filter, setFilter] = React.useState<string>('');
     const [selectedItems, setSelectedItems] = React.useState<Set<number>>(new Set());
     const [isLoading, setIsLoading] = React.useState(false);
@@ -69,12 +71,35 @@ const CDList: React.FC<CDListProps> = ({ cds }: CDListProps) => {
         }
     };
 
+    const handleDeleteClick: () => Promise<void> = async () => {
+        setIsLoading(true);
+        try {
+            // Get the selected CD IDs
+            const selectedCDIds: number[] = Array.from(selectedItems);
+
+            // Send DELETE request to delete selected CDs
+            await axios.delete('/api/cds', {
+                data: {ids: selectedCDIds}
+            });
+
+            // Call the callback function with the deleted CD IDs
+            onCDDeleted(selectedCDIds);
+
+            // Clear the selected items
+            setSelectedItems(new Set());
+        } catch (err) {
+            console.error('Error deleting CDs:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div>
             <TextInput
                 type="text"
                 value={filter}
-                onChange={e => setFilter(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setFilter(e.target.value)}
                 placeholder="Filter by author or category"
                 className="border p-2 mb-4 rounded"
             />
@@ -90,7 +115,7 @@ const CDList: React.FC<CDListProps> = ({ cds }: CDListProps) => {
                                     id="checkbox-all-search"
                                     type="checkbox"
                                     checked={isAllSelected}
-                                    ref={input => {
+                                    ref={(input: HTMLInputElement | null) => {
                                         if (input) {
                                             input.indeterminate = isPartiallySelected;
                                         }
@@ -107,7 +132,7 @@ const CDList: React.FC<CDListProps> = ({ cds }: CDListProps) => {
                     </tr>
                     </thead>
                     <tbody className="bg-indigo-50">
-                    {filteredCds.map(cd => (
+                    {filteredCds.map((cd: CD) => (
                         <tr key={cd.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <td className="w-4 p-4">
                                 <div className="flex items-center">
@@ -129,6 +154,17 @@ const CDList: React.FC<CDListProps> = ({ cds }: CDListProps) => {
                 </table>
             )}
             <div className="text-center">
+                {isAdmin && (
+                    <div className="text-center">
+                        <PrimaryButton
+                            onClick={handleDeleteClick}
+                            disabled={selectedItems.size === 0 || isLoading}
+                            className="text-black bg-red-400 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        >
+                            {isLoading ? 'Processing...' : `Delete (${selectedItems.size} selected)`}
+                        </PrimaryButton>
+                    </div>
+                )}
                 <PrimaryButton
                     onClick={handleLoanClick}
                     disabled={selectedItems.size === 0 || isLoading}

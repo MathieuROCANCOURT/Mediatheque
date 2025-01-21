@@ -25,8 +25,8 @@ export default function Loans() {
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
     const [isLoading, setIsLoading] = useState(false);
 
-    const isAllSelected = selectedItems.size === loans.length;
-    const isPartiallySelected = 0 < selectedItems.size && selectedItems.size < loans.length;
+    const isAllSelected: boolean = selectedItems.size === loans.length;
+    const isPartiallySelected: boolean = 0 < selectedItems.size && selectedItems.size < loans.length;
 
 
     useEffect(() => {

@@ -15,13 +15,13 @@ interface CreateCDProps {
     onCDAdded: (cd: CD) => void;
 }
 
-const CreateCD: React.FC<CreateCDProps> = ({ onCDAdded }) => {
+const CreateCD: React.FC<CreateCDProps> = ({onCDAdded: onCDAdded}: CreateCDProps) => {
     const [title, setTitle] = React.useState('');
     const [artist, setArtist] = React.useState('');
     const [category, setCategory] = React.useState('');
     const [year, setYear] = React.useState<number>(2000);
 
-    const handleCDClick = async () => {
+    const handleCDClick: () => Promise<void> = async () => {
         try {
             // Send POST request to create CD
             const response = await axios.post('/api/cds', {
@@ -44,7 +44,7 @@ const CreateCD: React.FC<CreateCDProps> = ({ onCDAdded }) => {
         }
     };
 
-    const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleYearChange: (e: React.ChangeEvent<HTMLInputElement>) => void = (e) => {
         const value = e.target.value;
         if (/^\d*$/.test(value)) {
             setYear(Number(value));
@@ -58,14 +58,14 @@ const CreateCD: React.FC<CreateCDProps> = ({ onCDAdded }) => {
                 placeholder="Still D.R.E."
                 className="border p-2 mb-4 rounded"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setTitle(e.target.value)}
             />
             Artist:
             <TextInput
                 placeholder="Dr. Dre ft. Snoop Doggy Dogg"
                 className="border p-2 mb-4 rounded"
                 value={artist}
-                onChange={(e) => setArtist(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setArtist(e.target.value)}
             />
             Year:
             <TextInput
@@ -84,7 +84,7 @@ const CreateCD: React.FC<CreateCDProps> = ({ onCDAdded }) => {
                 placeholder="Pop"
                 className="border p-2 mb-4 rounded"
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setCategory(e.target.value)}
             />
             <PrimaryButton onClick={handleCDClick}>
                 Add CD

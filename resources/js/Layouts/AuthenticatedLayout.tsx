@@ -1,15 +1,16 @@
 import Dropdown from '../Components/Dropdown';
 import NavLink from '../Components/NavLink';
 import ResponsiveNavLink from '../Components/ResponsiveNavLink';
-import {Link, usePage} from '@inertiajs/react';
+import {usePage} from '@inertiajs/react';
 import {PropsWithChildren, ReactNode, useState} from 'react';
 import {can} from "../helpers";
+import {User} from "../types";
 
 export default function Authenticated({
                                           header,
                                           children,
                                       }: PropsWithChildren<{ header?: ReactNode }>) {
-    const user = usePage().props.auth.user;
+    const user: User = usePage().props.auth.user as User;
     const success: any = usePage().props.success;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =

@@ -17,22 +17,59 @@ interface CD {
 export default function Dashboard() {
     const [cds, setCds] = React.useState<CD[]>([]);
 
-    React.useEffect(() => {
-        // Fetch the initial list of CDs
-        const fetchCds = async () => {
+    // Show all CD except if CD are in loan
+    React.useEffect((): void => {
+        const fetchCDs = async () => {
             try {
-                const response = await axios.get('/api/cds');
-                setCds(response.data.data);
-            } catch (err) {
-                console.error('Error fetching CDs:', err);
+                // Fetch both resources
+                const [cdResponse, loanResponse] = await Promise.all([
+                    axios.get('http://localhost:8000/api/cds'),
+                    axios.get('http://localhost:8000/api/loans')
+                ]);
+
+                const allCDs: CD[] = cdResponse.data.data;
+                const loanedCDs: [{id: number, cd_id:number, user_id:number, loan_date: Date, return_date: Date}] = loanResponse.data.data;
+
+                // Filter out CDs that are currently loaned
+                const availableCDs = allCDs.filter(cd => {
+                    return !loanedCDs.some((loan: {
+                            id: number;
+                            cd_id: number;
+                            user_id: number;
+                            loan_date: Date;
+                            return_date: Date
+                        }): boolean =>
+                        // Assuming cd_ids could be array or single value
+                        Array.isArray(loan.cd_id)
+                            ? loan.cd_id.includes(cd.id)
+                            : loan.cd_id === cd.id
+                    );
+                });
+
+                setCds(availableCDs);
+
+            } catch (err: any) {
+                // More specific error handling
+                if (err.response) {
+                    console.error(`Server error: ${err.response.status}`);
+                } else if (err.request) {
+                    console.error('Network error - no response received');
+                } else {
+                    console.error(`Error: ${err.message}`);
+                }
+                console.error('Error fetching data:', err);
             }
         };
 
-        fetchCds();
+        fetchCDs();
     }, []);
 
-    const handleCDAdded = (newCD: CD) => {
+    const handleCDAdded: (newCD: CD) => void = (newCD: CD) => {
         setCds([...cds, newCD]);
+    };
+
+    const handleCDDeleted: (deletedIds: number[]) => void = (deletedIds: number[]) => {
+        setCds(cds.filter((cd: CD): boolean => !deletedIds.includes(cd.id)));
     };
 
     return (
@@ -49,14 +86,14 @@ export default function Dashboard() {
                 <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                     <div className="p-6 text-black dark:text-gray-100">
                         <CreateCD onCDAdded={handleCDAdded} />
-                        <CDList cds={cds} />
+                        <CDList cds={cds} onCDDeleted={handleCDDeleted} isAdmin={true} />
                     </div>
                 </div>
             </AuthCheck>
             <AuthCheck permission="manage_users">
                 <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                     <div className="p-6 text-black dark:text-gray-100">
-                        <CDList cds={cds} />
+                        <CDList cds={cds} onCDDeleted={handleCDDeleted} isAdmin={false} />
                     </div>
                 </div>
             </AuthCheck>
