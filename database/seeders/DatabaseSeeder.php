@@ -11,29 +11,52 @@ use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void {
-        $userRole = Role::create(['name' => RolesEnum::User->value]);
-        $adminRole = Role::create(['name' => RolesEnum::Admin->value]);
+        // Clear cache
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $manageUsersPermission = Permission::create([
+        // Create roles with web guard
+        $userRole = Role::firstOrCreate([
+            'name' => RolesEnum::User->value,
+            'guard_name' => 'web'
+        ]);
+
+        $adminRole = Role::firstOrCreate([
+            'name' => RolesEnum::Admin->value,
+            'guard_name' => 'web'
+        ]);
+
+        // Create permissions with web guard
+        $manageUsersPermission = Permission::firstOrCreate([
             'name' => PermissionsEnum::ManageUsers->value,
+            'guard_name' => 'web'
         ]);
-        $manageAdminPermission = Permission::create([
+
+        $manageAdminPermission = Permission::firstOrCreate([
             'name' => PermissionsEnum::ManageAdmin->value,
+            'guard_name' => 'web'
         ]);
-        $userRole->syncPermissions([$manageUsersPermission]);
-        $adminRole->syncPermissions([$manageAdminPermission, $manageUsersPermission]);
-        User::factory()->create([
-            'name' => 'User User',
-            'email' => 'user@example.com',
-        ])->assignRole(RolesEnum::User);
-        User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-        ])->assignRole(RolesEnum::Admin);
+
+        // Sync permissions
+        $userRole->syncPermissions($manageUsersPermission);
+        $adminRole->syncPermissions($manageAdminPermission);
+
+        // Create test users
+        if (!User::whereEmail('user@example.com')->exists()) {
+            $user = User::factory()->create([
+                'name' => 'User User',
+                'email' => 'user@example.com',
+            ]);
+            $user->assignRole($userRole);
+        }
+
+        if (!User::whereEmail('admin@example.com')->exists()) {
+            $admin = User::factory()->create([
+                'name' => 'Admin User',
+                'email' => 'admin@example.com',
+            ]);
+            $admin->assignRole($adminRole);
+        }
 
         $this->call([
             CDsTableSeeder::class,

@@ -1,21 +1,25 @@
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import React from 'react';
+import TextInput from "./TextInput";
 import PrimaryButton from "./PrimaryButton";
-import {router} from '@inertiajs/react';
+import axios from "axios";
+import {router} from "@inertiajs/react";
 
 interface CD {
     id: number;
     title: string;
     artist: string;
     category: string;
+    year: number;
 }
 
-const CDList: React.FC = () => {
-    const [cds, setCds] = useState<CD[]>([]);
-    const [filter, setFilter] = useState<string>('');
-    const [error, setError] = useState<string>('');
-    const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
-    const [isLoading, setIsLoading] = useState(false);
+interface CDListProps {
+    cds: CD[];
+}
+
+const CDList: React.FC<CDListProps> = ({ cds }: CDListProps) => {
+    const [filter, setFilter] = React.useState<string>('');
+    const [selectedItems, setSelectedItems] = React.useState<Set<number>>(new Set());
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const filteredCds: CD[] = cds.filter((cd: CD): boolean =>
         cd.artist.toLowerCase().includes(filter.toLowerCase()) ||
@@ -24,50 +28,7 @@ const CDList: React.FC = () => {
     const isAllSelected = filteredCds.length > 0 && selectedItems.size === filteredCds.length;
     const isPartiallySelected = selectedItems.size > 0 && selectedItems.size < filteredCds.length;
 
-    useEffect(() => {
-        const fetchCDs = async () => {
-            try {
-                // Fetch both resources
-                const [cdResponse, loanResponse] = await Promise.all([
-                    axios.get('http://localhost:8000/api/cds'),
-                    axios.get('http://localhost:8000/api/loans')
-                ]);
-
-                const allCDs: CD[] = cdResponse.data.data;
-                const loanedCDs: [{id: number, cd_id:number, user_id:number, loan_date: Date, return_date: Date}] = loanResponse.data.data;
-
-                // Filter out CDs that are currently loaned
-                const availableCDs = allCDs.filter(cd => {
-                    return !loanedCDs.some(loan =>
-                        // Assuming cd_ids could be array or single value
-                        Array.isArray(loan.cd_id)
-                            ? loan.cd_id.includes(cd.id)
-                            : loan.cd_id === cd.id
-                    );
-                });
-
-                setCds(availableCDs);
-
-            } catch (err: any) {
-                // More specific error handling
-                if (err.response) {
-                    setError(`Server error: ${err.response.status}`);
-                } else if (err.request) {
-                    setError('Network error - no response received');
-                } else {
-                    setError(`Error: ${err.message}`);
-                }
-                console.error('Error fetching data:', err);
-            }
-        };
-
-        fetchCDs();
-    }, []);
-
-    /**
-     * Select or deselect all checkboxes
-     */
-    const handleSelectAll: () => void = (): void => {
+    const handleSelectAll = () => {
         if (selectedItems.size >= 1) {
             // If all items are selected, deselect all
             setSelectedItems(new Set());
@@ -77,7 +38,7 @@ const CDList: React.FC = () => {
         }
     };
 
-    const handleSelectItem: (id: number) => void = (id: number): void => {
+    const handleSelectItem = (id: number) => {
         const newSelectedItems = new Set(selectedItems);
         if (selectedItems.has(id)) {
             newSelectedItems.delete(id);
@@ -103,7 +64,6 @@ const CDList: React.FC = () => {
 
         } catch (err) {
             console.error('Error creating loans:', err);
-            setError('Failed to create loans');
         } finally {
             setIsLoading(false);
         }
@@ -111,8 +71,7 @@ const CDList: React.FC = () => {
 
     return (
         <div>
-            {error && <div className="text-red-500">{error}</div>}
-            <input
+            <TextInput
                 type="text"
                 value={filter}
                 onChange={e => setFilter(e.target.value)}

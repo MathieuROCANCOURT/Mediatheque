@@ -30,7 +30,25 @@ class CDController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        //
+        $validatedData = $request->validate([
+            'title' => 'required|string',
+            'artist' => 'required|string',
+            'category' => 'required|string|max:255',
+            'year' => 'required|integer'
+        ]);
+
+        try {
+            $cd = CD::create($validatedData);
+            return response()->json(data: [
+                'status' => 'success',
+                'data' => $cd
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

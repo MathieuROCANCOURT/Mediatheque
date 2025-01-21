@@ -24,6 +24,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/api/cds', [CDController::class, 'index']);
+    Route::get('/api/loans', [LoanController::class, 'index']);
+    Route::post('/api/loans', [LoanController::class, 'store']);
+    Route::post('/api/loans/return', [LoanController::class, 'returnCDs']);
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -32,9 +36,6 @@ Route::middleware(['auth'])->group(function () {
     })->name('loans');
 });
 
-Route::get('/api/cds', [CDController::class, 'index']);
-Route::get('/api/loans', [LoanController::class, 'index']);
-Route::post('/api/loans', [LoanController::class, 'store']);
-Route::post('/api/loans/return', [LoanController::class, 'returnCDs']);
+Route::post('api/cds', [CDController::class, 'store']);
 
 require __DIR__.'/auth.php';
