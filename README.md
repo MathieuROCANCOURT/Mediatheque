@@ -71,6 +71,8 @@ Run artisan server:
 php artisan serve
 ```
 
+After launch artisan server, view app with link: http://localhost:8000/
+
 ### Compte disponible
 
 | Privilège      | Adresse mail      | Mot de passe |
