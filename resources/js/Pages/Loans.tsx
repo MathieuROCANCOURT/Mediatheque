@@ -3,8 +3,7 @@ import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
 import {Head, usePage} from '@inertiajs/react';
 import axios from 'axios';
 import PrimaryButton from "../Components/PrimaryButton";
-import AuthCheck from "../Components/AuthCheck";
-import {PageProps, User} from "../types";
+import {User} from "../types";
 
 interface Loan {
     id: number;
@@ -22,8 +21,7 @@ interface Loan {
 }
 
 export default function Loans() {
-    const {auth} = usePage<PageProps>().props;
-    const currentUser: User = auth.user as User;
+    const currentUser: User = usePage().props.auth.user as User;
 
     const [loans, setLoans] = React.useState<Loan[]>([]);
     const [error, setError] = React.useState<string>('');

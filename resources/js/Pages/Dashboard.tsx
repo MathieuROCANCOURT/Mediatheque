@@ -31,7 +31,7 @@ export default function Dashboard() {
                 const loanedCDs: [{id: number, cd_id:number, user_id:number, loan_date: Date, return_date: Date}] = loanResponse.data.data;
 
                 // Filter out CDs that are currently loaned
-                const availableCDs = allCDs.filter(cd => {
+                const availableCDs: CD[] = allCDs.filter((cd: CD): boolean => {
                     return !loanedCDs.some((loan: {
                             id: number;
                             cd_id: number;
@@ -39,7 +39,7 @@ export default function Dashboard() {
                             loan_date: Date;
                             return_date: Date
                         }): boolean =>
-                        // Assuming cd_ids could be array or single value
+
                         Array.isArray(loan.cd_id)
                             ? loan.cd_id.includes(cd.id)
                             : loan.cd_id === cd.id
