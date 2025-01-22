@@ -11,51 +11,69 @@ La médiathèque prête les CD que les clients peuvent prendre.
 * [MailPit](https://github.com/axllent/mailpit)
 
 ### Diagramme pour la base de donnée pour les CD
+
 ![diagram_SQL.png](docs/diagram_SQL.png)
 
 ## Ligne de commande
 
 Install PHP dependencies:
+
 ```bash
 composer install
 ```
 
 Install NPM dependencies:
+
 ```bash
 npm install
 ```
 
 Build assets:
+
 ```bash
 npm run dev
 ```
 
 Setup configuration:
+
 ```bash
 cp .env.example .env
 ```
 
 Generate application key:
+
 ```bash
 php artisan key:generate
 ```
 
-Create an SQLite database. You can also use another database (MySQL, Postgres), simply update your configuration accordingly.
+Create an SQLite database. You can also use another database (MySQL, Postgres), simply update your configuration
+accordingly.
+
 ```bash
 touch database/database.sqlite
 ```
 
 Run database migrations:
+
 ```bash
 php artisan migrate
 ```
 
 Run database seeder:
+
 ```bash
 php artisan db:seed
 ```
 
 Run artisan server:
+
 ```bash
 php artisan serve
 ```
+
+### Compte disponible
+
+| Privilège      | Adresse mail      | Mot de passe |
+|----------------|-------------------|--------------|
+| Administrateur | admin@example.com | password     |
+| Utilisateur    | user@example.com  | password     |
