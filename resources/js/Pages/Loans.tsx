@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import AuthenticatedLayout from '../Layouts/AuthenticatedLayout';
-import {Head} from '@inertiajs/react';
+import {Head, usePage} from '@inertiajs/react';
 import axios from 'axios';
 import PrimaryButton from "../Components/PrimaryButton";
+import AuthCheck from "../Components/AuthCheck";
+import {PageProps, User} from "../types";
 
 interface Loan {
     id: number;
@@ -20,20 +22,30 @@ interface Loan {
 }
 
 export default function Loans() {
-    const [loans, setLoans] = useState<Loan[]>([]);
-    const [error, setError] = useState<string>('');
-    const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
-    const [isLoading, setIsLoading] = useState(false);
+    const {auth} = usePage<PageProps>().props;
+    const currentUser: User = auth.user as User;
+
+    const [loans, setLoans] = React.useState<Loan[]>([]);
+    const [error, setError] = React.useState<string>('');
+    const [selectedItems, setSelectedItems] = React.useState<Set<number>>(new Set());
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const isAllSelected: boolean = selectedItems.size === loans.length;
     const isPartiallySelected: boolean = 0 < selectedItems.size && selectedItems.size < loans.length;
 
 
-    useEffect(() => {
+    React.useEffect(() => {
         const fetchLoans = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/api/loans');
-                setLoans(response.data.data);
+                // If user has admin permission, show all loans
+                // Otherwise, filter loans for current user
+                const allLoans: Loan[] = response.data.data;
+                const filteredLoans: Loan[] = currentUser.permissions[0].includes('manage_admin')
+                    ? allLoans
+                    : allLoans.filter((loan: Loan) => loan.user.id === currentUser.id);
+
+                setLoans(filteredLoans);
             } catch (err) {
                 console.error('Error fetching loans:', err);
                 setError('Failed to load loans');
@@ -43,7 +55,7 @@ export default function Loans() {
         };
 
         fetchLoans();
-    }, []);
+    }, [currentUser]);
 
     /**
      * Select or deselect all checkboxes
@@ -95,7 +107,7 @@ export default function Loans() {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Loans
+                    {currentUser.permissions[0].includes('manage_admin') ? 'All Loans' : 'My Loans'}
                 </h2>
             }
         >
@@ -103,8 +115,6 @@ export default function Loans() {
 
             <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                 <div className="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 className="text-lg font-semibold mb-4">Active Loans</h2>
-
                     {error && <div className="text-red-500 mb-4">{error}</div>}
 
                     {isLoading ? (
@@ -133,7 +143,9 @@ export default function Loans() {
                                 </th>
                                 <th scope="col" className="px-6 py-3">CD Title</th>
                                 <th scope="col" className="px-6 py-3">Artist</th>
-                                <th scope="col" className="px-6 py-3">Client</th>
+                                {currentUser.permissions[0].includes('manage_admin') && (
+                                    <th scope="col" className="px-6 py-3">Client</th>
+                                )}
                                 <th scope="col" className="px-6 py-3">Loan Date</th>
                                 <th scope="col" className="px-6 py-3">Status</th>
                             </tr>
@@ -149,24 +161,27 @@ export default function Loans() {
                                                 checked={selectedItems.has(loan.id)}
                                                 onChange={() => handleSelectItem(loan.id)}
                                             />
-                                            <label htmlFor={`checkbox-${loan.id}`} className="sr-only">checkbox</label>
+                                            <label htmlFor={`checkbox-${loan.id}`}
+                                                   className="sr-only">checkbox</label>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {loan.cd.title}
                                     </td>
                                     <td className="px-6 py-4">{loan.cd.artist}</td>
-                                    <td className="px-6 py-4">{loan.user.name}</td>
+                                    {currentUser.permissions[0].includes('manage_admin') && (
+                                        <td className="px-6 py-4">{loan.user.name}</td>
+                                    )}
                                     <td className="px-6 py-4">{new Date(loan.loan_date).toLocaleDateString()}</td>
                                     <td className="px-6 py-4">
-                                        {new Date(loan.loan_date).toLocaleDateString() < new Date(loan.return_date).toLocaleDateString() ? "Loan" : "Warning"}
+                                        {new Date(loan.loan_date).toLocaleDateString() < new Date(loan.return_date).toLocaleDateString() ? "Active" : "Overdue"}
                                     </td>
                                 </tr>
                             ))}
                             </tbody>
                         </table>
                     )}
-                    <div className="text-center">
+                    <div className="text-center mt-4">
                         <PrimaryButton
                             onClick={handleReturnCDClick}
                             disabled={selectedItems.size === 0 || isLoading}
