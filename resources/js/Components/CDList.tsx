@@ -126,9 +126,10 @@ const CDList: React.FC<CDListProps> = ({cds, onCDDeleted, isAdmin}: CDListProps)
                                 <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
                             </div>
                         </th>
-                        <th scope="col" className="px-6 py-3">Title</th>
-                        <th scope="col" className="px-6 py-3">Artist</th>
-                        <th scope="col" className="px-6 py-3">Category</th>
+                        <th scope="col" className="px-14 py-3">Title</th>
+                        <th scope="col" className="px-14 py-3">Artist</th>
+                        <th scope="col" className="px-2 py-3">Category</th>
+                        <th scope="col" className="px-2 py-3">Year</th>
                     </tr>
                     </thead>
                     <tbody className="bg-indigo-50">
@@ -145,9 +146,10 @@ const CDList: React.FC<CDListProps> = ({cds, onCDDeleted, isAdmin}: CDListProps)
                                     <label htmlFor={`checkbox-${cd.id}`} className="sr-only">checkbox</label>
                                 </div>
                             </td>
-                            <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{cd.title}</td>
-                            <td className="px-6 py-4">{cd.artist}</td>
-                            <td className="px-6 py-4">{cd.category}</td>
+                            <td className="px-14 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{cd.title}</td>
+                            <td className="px-14 py-4">{cd.artist}</td>
+                            <td className="px-2 py-4">{cd.category}</td>
+                            <td className="px-2 py-4">{cd.year}</td>
                         </tr>
                     ))}
                     </tbody>
