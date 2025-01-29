@@ -1,20 +1,20 @@
-# Médiathéque
+# CD library
 
-## Objectif
+## Objective
 
-Créer une liste de CD pour proposer à la suite aux clients.
-La médiathèque prête les CD que les clients peuvent prendre.
+Create a CD library web application where users can borrow CDs and return them to the library.
+The administrator can add or remove CDs from the library and view all loaned CDs and their owners.
 
-## Outils utiliser
+## Tools
 
 * Laravel V11
 * [MailPit](https://github.com/axllent/mailpit)
 
-### Diagramme pour la base de donnée pour les CD
+## Database diagram for CDs
 
 ![diagram_SQL.png](docs/diagram_SQL.png)
 
-## Ligne de commande
+## Commands lines
 
 Install PHP dependencies:
 
@@ -73,9 +73,9 @@ php artisan serve
 
 After launch artisan server, view app with link: http://localhost:8000/
 
-### Compte disponible
+### Account avalaible
 
-| Privilège      | Adresse mail      | Mot de passe |
-|----------------|-------------------|--------------|
-| Administrateur | admin@example.com | password     |
-| Utilisateur    | user@example.com  | password     |
+| Privileged    | Mail              | Password     |
+|---------------|-------------------|--------------|
+| Administrator | admin@example.com | password     |
+| User          | user@example.com  | password     |
