@@ -161,7 +161,7 @@ const CDList: React.FC<CDListProps> = ({cds, onCDDeleted, isAdmin}: CDListProps)
                         <PrimaryButton
                             onClick={handleDeleteClick}
                             disabled={selectedItems.size === 0 || isLoading}
-                            className="text-black bg-red-400 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            className="mt-4 text-black bg-red-400 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                         >
                             {isLoading ? 'Processing...' : `Delete (${selectedItems.size} selected)`}
                         </PrimaryButton>
@@ -170,7 +170,7 @@ const CDList: React.FC<CDListProps> = ({cds, onCDDeleted, isAdmin}: CDListProps)
                 <PrimaryButton
                     onClick={handleLoanClick}
                     disabled={selectedItems.size === 0 || isLoading}
-                    className="text-black bg-blue-400 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    className="mt-4 text-black bg-blue-400 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                 >
                     {isLoading ? 'Processing...' : `Loans (${selectedItems.size} selected)`}
                 </PrimaryButton>

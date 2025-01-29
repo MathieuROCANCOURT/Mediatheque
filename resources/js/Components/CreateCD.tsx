@@ -52,26 +52,26 @@ const CreateCD: React.FC<CreateCDProps> = ({onCDAdded: onCDAdded}: CreateCDProps
     };
 
     return (
-        <div>
-            Title:
+        <div className="flex items-center gap-4 mb-4">
+            <label>Title:</label>
             <TextInput
                 placeholder="Still D.R.E."
-                className="border p-2 mb-4 rounded"
+                className="border p-2 rounded"
                 value={title}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setTitle(e.target.value)}
             />
-            Artist:
+            <label>Artist:</label>
             <TextInput
                 placeholder="Dr. Dre ft. Snoop Doggy Dogg"
-                className="border p-2 mb-4 rounded"
+                className="border p-2 rounded"
                 value={artist}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setArtist(e.target.value)}
             />
-            Year:
+            <label>Year:</label>
             <TextInput
                 type="number"
                 placeholder="Year"
-                className="border p-2 mb-4 rounded"
+                className="border p-2 rounded"
                 inputMode="numeric"
                 value={year.toString()}
                 onChange={handleYearChange}
@@ -79,10 +79,10 @@ const CreateCD: React.FC<CreateCDProps> = ({onCDAdded: onCDAdded}: CreateCDProps
                 max="2099"
                 step="1"
             />
-            Category:
+            <label>Category:</label>
             <TextInput
                 placeholder="Pop"
-                className="border p-2 mb-4 rounded"
+                className="border p-2 rounded"
                 value={category}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setCategory(e.target.value)}
             />
